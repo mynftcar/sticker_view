@@ -75,11 +75,7 @@ class StickerViewState extends State<StickerView> {
               RepaintBoundary(
                 key: stickGlobalKey,
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                  ),
-                  height:
-                      widget.height ?? MediaQuery.of(context).size.height * 0.7,
+                  height: widget.height ?? MediaQuery.of(context).size.height,
                   width: widget.width ?? MediaQuery.of(context).size.width,
                   child:
                       //DraggableStickers class in which stickerList is passed

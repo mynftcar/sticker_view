@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'draggable_resizable.dart';
 import 'stickerview.dart';
 
@@ -8,6 +9,7 @@ class DraggableStickers extends StatefulWidget {
 
   // ignore: use_key_in_widget_constructors
   const DraggableStickers({this.stickerList});
+
   @override
   State<DraggableStickers> createState() => _DraggableStickersState();
 }
@@ -19,6 +21,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
   final _initialStickerScale = 5.0;
 
   List<Sticker> stickers = [];
+
   @override
   void initState() {
     setState(() {
@@ -43,8 +46,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
                 // Main widget that handles all features like rotate, resize, edit, delete, layer update etc.
                 DraggableResizable(
-                  key:
-                      Key('stickerPage_${sticker.id}_draggableResizable_asset'),
+                  key: Key('stickerPage_${sticker.id}_draggableResizable_asset'),
                   canTransform: selectedAssetId == sticker.id ? true : false
 
                   //  true
@@ -79,10 +81,8 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
                   // Size of the sticker
                   size: sticker.isText == true
-                      ? Size(64 * _initialStickerScale / 3,
-                          64 * _initialStickerScale / 3)
-                      : Size(
-                          64 * _initialStickerScale, 64 * _initialStickerScale),
+                      ? Size(64 * _initialStickerScale / 3, 64 * _initialStickerScale / 3)
+                      : Size(64 * _initialStickerScale,  64 * _initialStickerScale),
 
                   // Constraints of the sticker
                   constraints: sticker.isText == true
