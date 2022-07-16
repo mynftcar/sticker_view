@@ -2,38 +2,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:sticker_view/resize_point.dart';
+import 'package:sticker_view/stickers/drag_update_model.dart';
 import 'constants.dart';
 import 'draggable_point.dart';
 import 'floating_action_icon.dart';
-
-/// {@template drag_update}
-/// Drag update model which includes the position and size.
-/// {@endtemplate}
-class DragUpdate {
-  /// {@macro drag_update}
-  const DragUpdate({
-    required this.angle,
-    required this.position,
-    required this.size,
-    required this.constraints,
-    required this.scale,
-  });
-
-  /// The angle of the draggable asset.
-  final double angle;
-
-  /// The position of the draggable asset.
-  final Offset position;
-
-  /// The size of the draggable asset.
-  final Size size;
-
-  /// The constraints of the parent view.
-  final Size constraints;
-
-  /// The scale of the draggable asset.
-  final double scale;
-}
 
 // const _floatingActionPadding = 0.0;
 
@@ -194,15 +166,11 @@ class _DraggableResizableState extends State<DraggableResizable> {
         // ignore: unused_element
         void onDragBottomLeft(Offset details) {
           final mid = ((details.dx * -1) + details.dy) / 2;
-
           final newHeight = math.max(size.height + (2 * mid), 0.0);
-
           final newWidth = math.max(size.width + (2 * mid), 0.0);
-
           final updatedSize = Size(newWidth, newHeight);
 
           // if (!widget.constraints.isSatisfiedBy(updatedSize)) return;
-
           final updatedPosition = Offset(position.dx - mid, position.dy - mid);
 
           // if (updatedSize > Size(100, 100)) {
@@ -252,6 +220,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
             child: Center(child: widget.child),
           ),
         );
+
         final topLeftCorner = FloatingActionIcon(
           key: const Key('draggableResizable_editFloatingActionIcon'),
           iconData: Icons.edit,
@@ -320,7 +289,7 @@ class _DraggableResizableState extends State<DraggableResizable> {
 
             setState(
               () {
-                angle = offsetFromCenter.direction + angleDelta * 0.5;
+                angle = offsetFromCenter.direction + angleDelta * 0.55;
               },
             );
             onUpdate();
@@ -350,14 +319,20 @@ class _DraggableResizableState extends State<DraggableResizable> {
                   ..rotateZ(angle),
                 child: DraggablePoint(
                   key: const Key('draggableResizable_childDraggablePoint'),
+
                   onTap: onUpdate,
+
                   onDrag: (d) {
+                    print("dragging");
+
                     setState(() {
                       position = Offset(position.dx + d.dx, position.dy + d.dy);
                     });
                     onUpdate();
                   },
+
                   onScale: (s) {
+                    print("scaling");
                     final updatedSize = Size(
                       widget.size.width * s,
                       widget.size.height * s,
@@ -379,31 +354,35 @@ class _DraggableResizableState extends State<DraggableResizable> {
                     });
                     onUpdate();
                   },
+
                   onRotate: (a) {
+                    print('rotate');
                     setState(() => angle = a * 0.5);
                     onUpdate();
                   },
+
                   child: Stack(
+                    // Add corner handles if this is the selected element
                     children: [
                       decoratedChild,
                       if (widget.canTransform && isTouchInputSupported) ...[
-                        Positioned(
-                          top: Constants.floatingActionPadding / 2,
-                          left: Constants.floatingActionPadding / 2,
-                          child: topLeftCorner,
-                        ),
-                        Positioned(
-                          right: (normalizedWidth / 2) -
-                              (Constants.floatingActionDiameter / 2) +
-                              (Constants.cornerDiameter / 2) +
-                              (Constants.floatingActionPadding / 2),
-                          child: topCenter,
-                        ),
-                        Positioned(
-                          bottom: Constants.floatingActionPadding / 2,
-                          left: Constants.floatingActionPadding / 2,
-                          child: deleteButton,
-                        ),
+                        // Positioned(
+                        //   top: Constants.floatingActionPadding / 2,
+                        //   left: Constants.floatingActionPadding / 2,
+                        //   child: topLeftCorner,
+                        // ),
+                        // Positioned(
+                        //   right: (normalizedWidth / 2) -
+                        //       (Constants.floatingActionDiameter / 2) +
+                        //       (Constants.cornerDiameter / 2) +
+                        //       (Constants.floatingActionPadding / 2),
+                        //   child: topCenter,
+                        // ),
+                        // Positioned(
+                        //   bottom: Constants.floatingActionPadding / 2,
+                        //   left: Constants.floatingActionPadding / 2,
+                        //   child: deleteButton,
+                        // ),
                         Positioned(
                           top: normalizedHeight + Constants.floatingActionPadding / 2,
                           left: normalizedWidth + Constants.floatingActionPadding / 2,

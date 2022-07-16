@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'draggable_resizable.dart';
-import 'stickerview.dart';
+import 'sticker_view.dart';
 
 class DraggableStickers extends StatefulWidget {
   //List of stickers (elements)
@@ -55,6 +55,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
 
                   // To update the layer (manage position of widget in stack)
                   onLayerTapped: () {
+                    print('draggable stickers layer tapped');
                     var listLength = stickers.length;
                     var ind = stickers.indexOf(sticker);
                     stickers.remove(sticker);
@@ -103,6 +104,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                   child: InkWell(
                     splashColor: Colors.transparent,
                     onTap: () {
+                      print('inkwell tapped');
                       // To update the selected widget
                       selectedAssetId = sticker.id;
                       setState(() {});
@@ -110,9 +112,7 @@ class _DraggableStickersState extends State<DraggableStickers> {
                     child: SizedBox(
                       width: double.infinity,
                       height: double.infinity,
-                      child: sticker.isText == true
-                          ? FittedBox(child: sticker)
-                          : sticker,
+                      child: FittedBox(child: sticker)
                     ),
                   ),
                 ),
