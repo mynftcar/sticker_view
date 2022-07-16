@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 class StickerImage extends StatefulWidget {
   final ImageProvider<Object> image;
@@ -28,6 +29,10 @@ class StickerImageState extends State<StickerImage> {
   @override
   void initState() {
     super.initState();
+    getImageOriginalSize();
+
+
+
   }
 
   @override
@@ -53,4 +58,13 @@ class StickerImageState extends State<StickerImage> {
   void initializeSize() {
     //widgetWidth = MediaQuery.of(context).size.width;
   }
+
+  Future<void> getImageOriginalSize() async {
+    AssetImage aimg = widget.image as AssetImage;
+    final ByteData assetImageByteData = await rootBundle.load(aimg.assetName);
+    var decodedImage = await decodeImageFromList(assetImageByteData.buffer.asUint8List());
+    _widgetSize = Size(decodedImage.width.toDouble(), decodedImage.height.toDouble());
+  }
+
 }
+

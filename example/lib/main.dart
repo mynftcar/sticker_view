@@ -30,6 +30,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final keyImage = GlobalKey();
   Size size = Size.zero;
+  Size originalSize = Size.zero;
   Offset position = Offset.zero;
 
   @override
@@ -40,11 +41,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void calculateSizeAndPosition() => WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        final RenderBox box = keyImage.currentContext!.findRenderObject() as RenderBox;
+        var x  = keyImage.currentState as StickerImageState;
 
         setState(() {
-          position = box.localToGlobal(Offset.zero);
-          size = box.size;
+          //position = box.localToGlobal(Offset.zero);
+          //size = box.size;
+          originalSize = x.widgetSize;
         });
       });
 
@@ -74,18 +76,14 @@ class _HomePageState extends State<HomePage> {
     return AppBar(
       actions: <Widget>[
         Text(
-          'Width: ${size.width.toInt()}  ',
+          'Original Size: ${originalSize.width.toInt()} x ${originalSize.height.toInt()} ',
         ),
         Text(
-          'Height: ${size.height.toInt()}  ',
+          'Current Size: ${size.width.toInt()} x ${size.height.toInt()}  ',
 
         ),
         Text(
-          'X: ${position.dx.toInt()}  ',
-
-        ),
-        Text(
-          'Y: ${position.dy.toInt()}  ',
+          'Position: X: ${position.dx.toInt()} x ${position.dy.toInt()}  ',
         ),
       ],
     );
