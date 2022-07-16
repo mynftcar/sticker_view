@@ -41,12 +41,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void calculateSizeAndPosition() => WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        var x  = keyImage.currentState as StickerImageState;
+        var newState  = keyImage.currentState as StickerImageState;
 
         setState(() {
-          //position = box.localToGlobal(Offset.zero);
-          //size = box.size;
-          originalSize = x.widgetSize;
+          size = newState.widgetSize;
+          originalSize = newState.imageSize;
+          position = newState.widgetPosition;
         });
       });
 
@@ -66,8 +66,8 @@ class _HomePageState extends State<HomePage> {
         StickerImage(
           image: const AssetImage("veyron_s.png"),
           key: keyImage,
+          onUpdate: calculateSizeAndPosition
         ),
-
       ]),
     );
   }
@@ -80,7 +80,6 @@ class _HomePageState extends State<HomePage> {
         ),
         Text(
           'Current Size: ${size.width.toInt()} x ${size.height.toInt()}  ',
-
         ),
         Text(
           'Position: X: ${position.dx.toInt()} x ${position.dy.toInt()}  ',
