@@ -22,11 +22,12 @@ class StickerImageState extends State<StickerImage> {
   Key _keyImage = GlobalKey();
 
   Size _imageSize = Size.zero;
-  Size _widgetSize = Size.zero;
+  Size _size = Size.zero;
+  Offset _position = Offset.zero;
 
   Size get imageSize => _imageSize;
 
-  Size get widgetSize => _widgetSize;
+  Size get widgetSize => _size;
 
   @override
   void initState() {
@@ -38,20 +39,21 @@ class StickerImageState extends State<StickerImage> {
   Widget build(BuildContext context) {
     initializeSize();
 
-    void onUpdate() {
+    void onUpdate(DragUpdateDetails d) {
       print("onUpdate");
+      setState(() {
+        _position = Offset(_position.dx + d.delta.dx, _position.dy + d.delta.dy);
+      });
     }
 
     return Expanded(
         child: Stack(children: [
       Positioned(
-          //width: widgetWidth,
-          child: Transform(
-        transform: Matrix4.identity(),
-        child: GestureDetector(
-            onTap: onUpdate,
-            child: Image(key: _keyImage, image: widget.image)),
-      ))
+          left: _position.dx,
+          top: _position.dy,
+          child: GestureDetector(
+              onPanUpdate: onUpdate,
+              child: Image(key: _keyImage, image: widget.image)))
     ]));
   }
 
@@ -65,6 +67,6 @@ class StickerImageState extends State<StickerImage> {
     AssetImage aimg = widget.image as AssetImage;
     final ByteData assetImageByteData = await rootBundle.load(aimg.assetName);
     var decodedImage = await decodeImageFromList(assetImageByteData.buffer.asUint8List());
-    _widgetSize = Size(decodedImage.width.toDouble(), decodedImage.height.toDouble());
+    _size = Size(decodedImage.width.toDouble(), decodedImage.height.toDouble());
   }
 }
