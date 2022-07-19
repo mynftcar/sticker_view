@@ -65,8 +65,40 @@ class StickerImageState extends State<StickerImage> {
   }
 
   void onDragBottomRight(Offset details) {
+    singleAxisKeepAspectRatioResizer(details);
+    triggerOnUpdate();
+  }
 
-    // adds/removes the movement to size;
+  void squareResizer(Offset details) {
+    final mid = (details.dx + details.dy) / 2;
+    final newHeight = math.max(widgetSize.height + (2 * mid), 0.0);
+    final newWidth = math.max(widgetSize.width + (2 * mid), 0.0);
+    final updatedSize = Size(newWidth, newHeight);
+
+    // if (!widget.constraints.isSatisfiedBy(updatedSize)) return;
+
+    final updatedPosition = Offset(widgetPosition.dx - mid, widgetPosition.dy - mid);
+    // minimum size of the sticker should be Size(50,50)
+    if (updatedSize > const Size(50, 50)) {
+      setState(() {
+        _size = updatedSize;
+        _position = updatedPosition;
+      });
+    }
+  }
+
+  void singleAxisKeepAspectRatioResizer (Offset details) {
+    double resizeRatio = (widgetSize.width + details.dx) / widgetSize.width;
+    print(resizeRatio);
+    final updatedSize = Size(widgetSize.width * resizeRatio, widgetSize.height * resizeRatio);
+    if (updatedSize > const Size(50, 50)) {
+      setState(() {
+        _size = updatedSize;
+      });
+    }
+  }
+
+  void ratioResizer(Offset details) {
     double wRatio = (widgetSize.width + details.dx) / widgetSize.width;
     double hRatio = (widgetSize.height + details.dy) / widgetSize.height;
 
@@ -79,14 +111,16 @@ class StickerImageState extends State<StickerImage> {
     }
 
     final updatedSize = Size(widgetSize.width * resizeRatio, widgetSize.height * resizeRatio);
+    final updatedPosition = Offset(widgetPosition.dx * resizeRatio, widgetPosition.dy * resizeRatio);
 
     // minimum size of the sticker should be Size(50,50)
     if (updatedSize > const Size(50, 50)) {
       setState(() {
         _size = updatedSize;
+        _position  = updatedPosition;
       });
     }
-    triggerOnUpdate();
+
   }
 
   @override
@@ -135,7 +169,7 @@ class StickerImageState extends State<StickerImage> {
           child: GestureDetector(
               onPanUpdate: onUpdate,
               onTap: onTap,
-              child: Image(key: _keyImage, image: widget.image)
+              child: Image(key: _keyImage, image: widget.image, fit: BoxFit.fill,)
           ),
         )
     );
